@@ -1,7 +1,9 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
-const gravatar = require('gravatar')
-const bcrypt = require('bcryptjs')
+const gravatar = require('gravatar');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 const { check, validationResult} = require("express-validator")
 
 // User model
@@ -25,6 +27,7 @@ router.post('/', [
     const {name, email, password} = req.body;
 
     try {
+    // See if user exists
     let user = await User.findOne({ email }); // ({email: email}) = ({email})
 
     if(user) {
@@ -39,6 +42,7 @@ router.post('/', [
         d: 'mm' // default image
     })
 
+    // Used to create a new user if user does not exist
     user = new User({
         name,
         email,
@@ -52,10 +56,21 @@ router.post('/', [
 
     user.password = await bcrypt.hash(password, salt);
 
+    // This saves the user to the database
     await user.save()
 
     // Return the jsonwebtoken so user can get logged in right away
-    res.send('User registered')
+    const payload = {
+        user: {
+            id: user.id
+        }
+    }
+
+    jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 360000}, (err, token) =>{
+        if(err) throw err;
+        res.json({token})
+    })
+
     }
     catch(err){
         console.error(err.message);
