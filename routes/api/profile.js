@@ -64,7 +64,9 @@ const {
     if(status) profileFields.status = status;
     if(githubusername) profileFields.githubusername = githubusername;
     if(skills) {
+        // profileFields.skills organizes all the skills listed on postman body into an array
         profileFields.skills = skills.split(',').map(skill => skill.trim())
+        // console.log(profileFields.skills);
     }
 
     // Build social object
@@ -95,15 +97,11 @@ const {
         res.status(500).send('Server error')
     }
 
-    // profileFields.skills organizes all the skills listed on postman body into an array 
-    console.log(profileFields.skills);
+     
+    
 
-    // res.send('Hello')
+    res.send('Hello')
 }
 )
-
-
-
-
 
 module.exports = router;
