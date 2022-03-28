@@ -1,12 +1,96 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
+const { check, validationResult } = require('express-validator');
+const auth = require('../../middleware/auth');
+const checkObjectId = require('../../middleware/checkObjectId');
+const Post = require('../../models/Post');
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+
+// @route  POST api/posts
+// @desc   Create a post
+// @access Private
+
+router.post(
+  '/',
+  [auth, [check('text', 'Text is required').not().isEmpty()]],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      // Here, we are finding the user by the id as given to use by the token, and is
+      // put inside req.user.id. 'select' will prevent the app from sending the password back.
+      const user = await User.findById(req.user.id).select('-password');
+
+      const newPost = new Post({
+        text: req.body.text,
+        name: user.name,
+        avatar: user.avatar,
+        user: req.user.id,
+      });
+
+      const post = await newPost.save();
+
+      res.json(post);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
 
 // @route  GET api/posts
-// @desc   Test user
-// @access Public
+// @desc   Get all posts
+// @access Private
+router.get('/', auth, async (req, res) => {
+  try {
+    const posts = await Post.find().sort({
+      date: -1,
+    });
+    res.json(posts);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
-router.get('/', (req, res) => {
-res.send('Posts Route')
+// @route  GET api/posts/:id
+// @desc   Get post by ID
+// @access Private
+router.get('/:id', [auth, checkObjectId('id')], async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route  DELETE api/posts/:id
+// @desc   Delete a post
+// @access Private
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    // Check user
+    if (post.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    await post.remove();
+
+    res.json({ msg: 'Post removed' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 module.exports = router;

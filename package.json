@@ -4,7 +4,7 @@
   "description": "Social app for developers",
   "main": "index.js",
   "scripts": {
-    "start": "node server", 
+    "start": "node server",
     "server": "nodemon server"
   },
   "repository": {
@@ -28,5 +28,8 @@
     "mongoose": "^6.2.2",
     "nodemon": "^2.0.15",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "kill-port": "^1.6.1"
   }
 }
