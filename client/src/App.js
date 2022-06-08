@@ -11,6 +11,7 @@ import CreateProfile from './components/profile-forms/CreateProfile';
 import PrivateRoute from './components/routing/PrivateRoute';
 import NotFound from './components/layout/NotFound';
 import EditProfile from './components/profile-forms/EditProfile';
+import AddExperience from './components/profile-forms/AddExperience';
 
 // Redux
 import { Provider } from 'react-redux';
@@ -50,6 +51,10 @@ const App = () => {
             <Route
               path='/edit-profile'
               element={<PrivateRoute component={EditProfile} />}
+            />
+            <Route
+              path='/add-experience'
+              element={<PrivateRoute component={AddExperience} />}
             />
             <Route component={NotFound} />
           </Routes>
