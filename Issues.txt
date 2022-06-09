@@ -1,0 +1,2 @@
+For Lecture 50 (Add Education and Experiences), after submitting the experience, the 'Excperience Added' alert goes underneath 
+the navbar.

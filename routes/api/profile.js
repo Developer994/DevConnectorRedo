@@ -105,8 +105,6 @@ router.post(
       console.error(err.message);
       res.status(500).send('Server error');
     }
-
-    res.send('Hello');
   }
 );
 

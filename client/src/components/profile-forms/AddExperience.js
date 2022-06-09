@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addExperience } from '../../actions/profile';
 
-const AddExperience = (addExperience) => {
+const AddExperience = ({ addExperience }) => {
   const [formData, setFormData] = useState({
     company: '',
     title: '',
