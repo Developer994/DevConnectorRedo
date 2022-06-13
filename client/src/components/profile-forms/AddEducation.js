@@ -83,7 +83,7 @@ const AddEducation = ({ addEducation }) => {
           </div>
           <div className='form-group'>
             <p>
-              Current Job{' '}
+              Currently Enrolled{' '}
               <input
                 type='checkbox'
                 name='current'
